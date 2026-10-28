@@ -1,5 +1,7 @@
 # Lovers_Kernel_Apatch
 The base kernel used in Apatch-based systems.
+To use it, please apply the patch using an Apatch-based management app.
+
 Pixel 11/Pro/Pro XL Custom Kernel
 
 SuSFS
