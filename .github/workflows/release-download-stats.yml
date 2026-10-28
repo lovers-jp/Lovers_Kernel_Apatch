@@ -3,39 +3,46 @@ name: Lovers Kernel Apatch Download Stats
 on:
   workflow_dispatch:
   schedule:
-    # 00:17 UTC = 09:17 JST daily (may be delayed by GitHub Actions)
+    # JST 09:17 every day (UTC 00:17). GitHub may run it later.
     - cron: '17 0 * * *'
 
 permissions:
   contents: write
 
 concurrency:
-  group: lovers-kernel-Apatch-release-stats
+  group: lovers-kernel-apatch-download-stats
   cancel-in-progress: false
 
 jobs:
   collect:
+    if: github.repository == 'lovers-jp/Lovers_Kernel_Apatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
+          ref: main
           persist-credentials: true
 
-      - name: Collect release download counts
+      - name: Collect Release downloads
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python3 scripts/collect_release_downloads.py
 
-      - name: Commit snapshot and statistics
+      - name: Display stats in this Action run
+        shell: bash
+        run: cat stats/README.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save statistics in repository
+        shell: bash
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add stats/
           if ! git diff --cached --quiet; then
-            git commit -m "stats: record release downloads"
-            git push
+            git commit -m 'stats: update Apatch Release downloads'
+            git push origin HEAD:main
           else
-            echo "No statistics changed."
+            echo 'No changes to statistics.'
           fi
