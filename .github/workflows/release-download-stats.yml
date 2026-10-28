@@ -1,4 +1,4 @@
-name: Lovers Kernel Download Stats
+name: Lovers Kernel Apatch Download Stats
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: lovers-kernel-release-stats
+  group: lovers-kernel-Apatch-release-stats
   cancel-in-progress: false
 
 jobs:
